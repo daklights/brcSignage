@@ -1,12 +1,10 @@
 #!/bin/bash
 
 # turn on TV
-echo "on 0.0.0.0" | cec-client -s -d 1
-sleep 5
+#echo "on 0.0.0.0" | cec-client -s -d 1
 
 # set TV to this input
-echo "as 0.0.0.0" | cec-client -s -d 1
-sleep 5
+#echo "as 0.0.0.0" | cec-client -s -d 1
 
 # start CVLC video
-/usr/bin/cvlc --fullscreen --no-audio --repeat --no-video-title-show /home/pi/videos/ripples.mp4
+/usr/bin/cvlc --fullscreen --no-audio --loop --no-video-title-show /home/pi/videos/ripples.mp4
