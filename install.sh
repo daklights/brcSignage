@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Promote self to root
-if [ "$EUID" -ne 0 ]
-	then echo "Please execute this install script as root (sudo)"
-	exit
-fi
+# Ensure this script is run as root
+if [ "$(id -u)" -ne 0 ]; then echo "Please run this install script as root." >&2; exit 1; fi
 
 # Install deps
 echo "Updating system"
@@ -27,9 +24,8 @@ curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/video.
 systemctl enable video.service
 
 # Create the videos directory and download sample video
-echo "Downloading sample video"
 mkdir /home/pi/videos
-curl https://github.com/daklights/brcSignage/raw/master/assets/ripples.mp4 -o /home/pi/videos/ripples.mp4
+echo "REMINDER: download videos into the /home/pi/videos folder before starting the video service!"
 
 echo "=== INSTALL COMPLETE ==="
 echo "Installed services, video will play at next boot."

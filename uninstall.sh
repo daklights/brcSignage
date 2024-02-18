@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Promote self to root
-if [ "$EUID" -ne 0 ]
-	then echo "Please execute this uninstall script as root (sudo)"
-	exit
-fi
+# Ensure this script is run as root
+if [ "$(id -u)" -ne 0 ]; then echo "Please run this uninstall script as root." >&2; exit 1; fi
 
 # Stop service
 echo "Stopping video service"
