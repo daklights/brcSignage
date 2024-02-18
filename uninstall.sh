@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Promote self to root
-if [ $EUID != 0 ]; then
-  sudo "$0" "$@"
-  exit $?
+if [ "$EUID" -ne 0 ]
+	then echo "Please execute this uninstall script as root (sudo)"
+	exit
 fi
 
 # Stop service
