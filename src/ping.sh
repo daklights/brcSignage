@@ -20,8 +20,12 @@ phoneHomeIP=$(cat /home/pi/phoneHomeConfig.txt)
 fullVideo=`ls /home/pi/videos/*.mp4`
 currentVideo=$(basename $fullVideo)
 
-# Make phone home checkin
-fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&r=${res}&v=${currentVideo}"
+# Get current power status
+curPow=$(echo "pow 0.0.0.0" | cec-client -s -d 1 | grep power)
+curPow=${curPow//"power status:"/}
+
+# Make remote checkin for video updates
+fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&cp=${curPow}&r=${res}&v=${currentVideo}"
 fullURL="http://${phoneHomeIP}/remoteCheckin.php${fullArgs}"
 jsonData=$(curl -s "${fullURL}")
 
@@ -29,11 +33,29 @@ jsonData=$(curl -s "${fullURL}")
 IFS='|' read -r -a responseArray <<< "${jsonData}"
 em=${responseArray[0]}
 wm=${responseArray[1]}
-v=${responseArray[2]}
+c=${responseArray[2]}
+v=${responseArray[3]}
 
 # Check for call/response match (on any mac address)
 if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 	# Call/response match, continue processing
+	
+	# Do command execution (if needed)
+	if [ "$c" != "NOTHING" ]; then
+		if [ "$c" == "POWERON" ]; then
+			echo $(date -u) ": Turning power on and setting active input"
+			echo "on 0.0.0.0" | cec-client -s -d 1
+			echo "as 0.0.0.0" | cec-client -s -d 1
+		elif [ "$c" == "POWEROFF" ]; then
+			echo $(date -u) ": Turning power off"
+			echo "standby 0.0.0.0" | cec-client -s -d 1
+		elif [ "$c" == "REBOOT" ]; then
+			echo $(date -u) ": Rebooting device"
+			reboot
+		fi	
+	fi
+	
+	# Do video swap (if needed)
 	if [ "$currentVideo" != "$v" ]; then
 			# Video has changed, clear existing video, then download new one, then restart video service
 			echo $(date -u) ": Removing existing MP4 video (${currentVideo})"
@@ -44,7 +66,10 @@ if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 			systemctl restart video.service
 			echo $(date -u) ": Video update complete"
 	fi
+	
 else
+
 	# Call/response do not match
 	echo $(date -u) ": Call/response mismatch; no action taken"
+	
 fi
