@@ -1,6 +1,7 @@
 WARNING! This file is a placeholder.
-Enter your phoneHome computer's IP address and folder in this file as a single line of plain text.
-Examples are listed below... use ONLY a single entry, and do not use a beginning or trailing slash:
+Enter your phoneHome server's IP address and folder structure in this file as a single line of plain text.
+You may enter multiple lines, but only the first successful entry (starting from the top) will be used during each checkin.
+Examples are listed below... use ONLY a single entry per line, and do not use a beginning or trailing slash:
 
 192.168.0.100
 192.168.0.100/customFolder

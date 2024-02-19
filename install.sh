@@ -33,9 +33,8 @@ systemctl enable video.service
 # Create the videos directory and download sample video
 echo $(date -u) ": Creating videos directory"
 mkdir /home/pi/videos
-echo $(date -u) ": REMINDER: adjust your phoneHomeConfig.txt file as instructed in the /home/pi/phoneHomeConfig.txt sample file!"
 
 # Complete install process
 echo $(date -u) "=== INSTALL COMPLETE ==="
-echo $(date -u) "Installed services, video will play at next boot."
-echo $(date -u) "To start now, run 'video start'."
+echo $(date -u) ": Service installation successful; video playback will automatically begin after you setup the phoneHome configuration."
+echo $(date -u) ": REMINDER: adjust your phoneHomeConfig.txt file as instructed in the /home/pi/phoneHomeConfig.txt sample file!"
