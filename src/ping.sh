@@ -31,9 +31,6 @@ em=${responseArray[0]}
 wm=${responseArray[1]}
 v=${responseArray[2]}
 
-echo $(date -u) ": Check [$ETHI_m] vs [$em]"
-echo $(date -u) ": Check [$WLAI_m] vs [$wm]"
-
 # Check for call/response match (on any mac address)
 if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 	# Call/response match, continue processing
