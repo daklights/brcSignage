@@ -10,6 +10,9 @@ WLAI=$(/sbin/ifconfig | grep -E "wlan0:" | cut -d ' ' -f1 | cut -d: -f1)
 WLAI_i=$(ip -o -4 addr list $WLAI | awk '{print $4}' | cut -d/ -f1);
 WLAI_m=$(ip -o link list $WLAI | awk '{print $17}' | sed -e 's/://g');
 
+# Get device hostname
+hn=$(cat /etc/hostname)
+
 # Get device screen resoltuion
 res=$(cat /sys/class/graphics/fb0/virtual_size | tr ',' 'x')
 
@@ -25,7 +28,7 @@ curPow=$(echo "pow 0.0.0.0" | cec-client -s -d 1 | grep power)
 curPow=${curPow//"power status: "/}
 
 # Make remote checkin for video updates
-fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&cp=${curPow}&r=${res}&v=${currentVideo}"
+fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&hn=${hn}&cp=${curPow}&r=${res}&v=${currentVideo}"
 fullURL="http://${phoneHomeIP}/remoteCheckin.php${fullArgs}"
 jsonData=$(curl -s "${fullURL}")
 
