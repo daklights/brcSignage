@@ -19,6 +19,7 @@ echo $(date -u) ": Removing video scripts"
 rm -f /opt/player.sh
 rm -f /opt/ping.sh
 rm -f /usr/local/bin/video
+rm -f /home/pi/phoneHomeConfig.txt
 
 # Set reminder for user to clean up crontab
 echo $(date -u) ": WARNING: you must manually remove the crontab entry for ping.sh (sudo crontab -e)"

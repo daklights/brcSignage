@@ -20,10 +20,9 @@ chmod +x /opt/player.sh
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/ping.sh -o /opt/ping.sh
 chmod +x /opt/ping.sh
 cronjob="* * * * * /opt/ping.sh > /var/log/brcSignage_ping.log"
-(crontab -u userhere -l; echo "$cronjob" ) | crontab -u userhere -
+(crontab -u root -l; echo "$cronjob" ) | crontab -u root -
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/video -o /usr/local/bin/video
 chmod +x /usr/local/bin/video
-curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/uninstall.sh -o /home/pi/uninstall.sh
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/phoneHomeConfig.txt -o /home/pi/phoneHomeConfig.txt
 
 # Install systemd unit
