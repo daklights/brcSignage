@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# Get device IP, MAC, and RESOLUTION
-for iface in $(/sbin/ifconfig | grep "eth0:" | cut -d ' ' -f1 | cut -d: -f1); do
-     ipadd=$(ip -o -4 addr list $iface | awk '{print $4}' | cut -d/ -f1);
-     madd=$(ip -o link list $iface | awk '{print $17}' | sed -e 's/://g');
-done
+# Get device eth0 IP and MAC address
+ETHI=$(/sbin/ifconfig | grep -E "eth0:" | cut -d ' ' -f1 | cut -d: -f1)
+ETHI_i=$(ip -o -4 addr list $ETHI | awk '{print $4}' | cut -d/ -f1);
+ETHI_m=$(ip -o link list $ETHI | awk '{print $17}' | sed -e 's/://g');
+
+# Get device wlan0 IP and MAC address
+WLAI=$(/sbin/ifconfig | grep -E "wlan0:" | cut -d ' ' -f1 | cut -d: -f1)
+WLAI_i=$(ip -o -4 addr list $WLAI | awk '{print $4}' | cut -d/ -f1);
+WLAI_m=$(ip -o link list $WLAI | awk '{print $17}' | sed -e 's/://g');
+
+# Get device screen resoltuion
 res=$(cat /sys/class/graphics/fb0/virtual_size)
 
 # Get the phone home config file
@@ -15,18 +21,18 @@ fullVideo=`ls /home/pi/videos/*.mp4`
 currentVideo=$(basename $fullVideo)
 
 # Make phone home checkin
-fullArgs="?m=${madd}&i=${ipadd}&r=${res}&v=${currentVideo}"
+fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&r=${res}&v=${currentVideo}"
 fullURL="http://${phoneHomeIP}/remoteCheckin.php${fullArgs}"
 jsonData=$(curl -s "${fullURL}")
 
 # Split response variables
 IFS='|' read -r -a responseArray <<< "${jsonData}"
+em=${responseArray[0]}
+wm=${responseArray[1]}
+v=${responseArray[2]}
 
-m=${responseArray[0]}
-v=${responseArray[1]}
-
-# Check for call/response match
-if [ "$madd" == "$m" ]; then
+# Check for call/response match (on any mac address)
+if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 	# Call/response match, continue processing
 	if [ "$currentVideo" != "$v" ]; then
 			# Video has changed, clear existing video, then download new one, then restart video service
