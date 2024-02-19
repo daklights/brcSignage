@@ -60,6 +60,9 @@ if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 		elif [ "$c" == "POWEROFF" ]; then
 			echo $(date -u) ": Turning power off"
 			echo "standby 0.0.0.0" | cec-client -s -d 1
+		elif [ "$c" == "RECYCLE" ]; then
+			echo $(date -u) ": Restarting video service"
+			systemctl restart video.service
 		elif [ "$c" == "REBOOT" ]; then
 			echo $(date -u) ": Rebooting device"
 			/sbin/reboot
