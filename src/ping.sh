@@ -22,7 +22,7 @@ currentVideo=$(basename $fullVideo)
 
 # Get current power status
 curPow=$(echo "pow 0.0.0.0" | cec-client -s -d 1 | grep power)
-curPow=${curPow//"power status:"/}
+curPow=${curPow//"power status: "/}
 
 # Make remote checkin for video updates
 fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&cp=${curPow}&r=${res}&v=${currentVideo}"
@@ -71,6 +71,7 @@ else
 
 	# Call/response do not match
 	echo $(date -u) ": Call/response mismatch; no action taken"
+	echo $(date -u) ": Sent [$fullURL]"
 	echo $(date -u) ": Received [$em] [$wm] [$c] [$v]"
 	
 fi
