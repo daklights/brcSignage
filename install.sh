@@ -10,8 +10,8 @@ echo $(date -u) ": === STARTING INSTALL ==="
 echo $(date -u) ": Updating system"
 apt update
 
-echo $(date -u) ": Installing/Updating curl, vlc, jq, and cec-utils"
-apt install -y curl vlc jq cec-utils
+echo $(date -u) ": Installing/Updating curl, vlc, and cec-utils"
+apt install -y curl vlc cec-utils
 
 # Install/uninstall scripts
 echo $(date -u) ": Downloading video scripts"
