@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get device IP, MAC, and RESOLUTION
-for iface in $(ifconfig | grep "eth0:" | cut -d ' ' -f1 | cut -d: -f1); do
+for iface in $(/sbin/ifconfig | grep "eth0:" | cut -d ' ' -f1 | cut -d: -f1); do
      ipadd=$(ip -o -4 addr list $iface | awk '{print $4}' | cut -d/ -f1);
      madd=$(ip -o link list $iface | awk '{print $17}' | sed -e 's/://g');
 done
