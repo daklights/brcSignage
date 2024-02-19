@@ -16,9 +16,6 @@ hn=$(cat /etc/hostname)
 # Get device screen resoltuion
 res=$(cat /sys/class/graphics/fb0/virtual_size | tr ',' 'x')
 
-# Get the phone home config file
-phoneHomeIP=$(cat /home/pi/phoneHomeConfig.txt)
-
 # Get current video
 fullVideo=`ls /home/pi/videos/*.mp4`
 currentVideo=$(basename $fullVideo)
@@ -27,10 +24,21 @@ currentVideo=$(basename $fullVideo)
 curPow=$(echo "pow 0.0.0.0" | cec-client -s -d 1 | grep power)
 curPow=${curPow//"power status: "/}
 
-# Make remote checkin for video updates
+# Make remote checkin call
 fullArgs="?em=${ETHI_m}&ei=${ETHI_i}&wm=${WLAI_m}&wi=${WLAI_i}&hn=${hn}&cp=${curPow}&r=${res}&v=${currentVideo}"
-fullURL="http://${phoneHomeIP}/remoteCheckin.php${fullArgs}"
-jsonData=$(curl -s "${fullURL}")
+while IFS= read -r line; do
+	fullURL="http://${line}/remoteCheckin.php${fullArgs}"
+	response=$(curl -s -w "\n%{http_code}" $fullURL)
+	http_code=$(tail -n1 <<< "$response")
+	jsonData=$(sed '$ d' <<< "$response")
+	if [ "$http_code" == "200" ]; then
+		phoneHomeIP=$line
+		break;
+	else
+		echo $(date -u) ": Invalid response detected from phoneHome configuration entry [$line] [HTTP:$http_code]"
+		echo $(date -u) ": You should set a new phoneHome configuration entry if this error happens often"
+	fi
+done < /home/pi/phoneHomeConfig.txt
 
 # Split response variables
 IFS='|' read -r -a responseArray <<< "${jsonData}"
