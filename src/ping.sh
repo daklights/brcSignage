@@ -51,7 +51,7 @@ if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 			echo "standby 0.0.0.0" | cec-client -s -d 1
 		elif [ "$c" == "REBOOT" ]; then
 			echo $(date -u) ": Rebooting device"
-			reboot
+			/sbin/reboot
 		fi	
 	fi
 	
