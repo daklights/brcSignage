@@ -27,15 +27,18 @@ v=${responseArray[1]}
 
 # Check for call/response match
 if [ "$madd" == "$m" ]; then
-        # Call/response match, continue processing
-        if [ "$currentVideo" != "$v" ]; then
-                # Video has changed, clear existing video, then download new one, then restart video service
-                echo $(date -u) ": Removing existing MP4 video (${currentVideo})"
-                rm /home/pi/videos/*.mp4
-                echo $(date -u) ": Downloading new MP4 video (${v})"
-                curl -s "http://${phoneHomeIP}/videos/${v}" -o /home/pi/videos/${v}
-                echo $(date -u) ": Restarting video service"
-                systemctl restart video.service
-                echo $(date -u) ": Video update complete"
-        fi
+	# Call/response match, continue processing
+	if [ "$currentVideo" != "$v" ]; then
+			# Video has changed, clear existing video, then download new one, then restart video service
+			echo $(date -u) ": Removing existing MP4 video (${currentVideo})"
+			rm /home/pi/videos/*.mp4
+			echo $(date -u) ": Downloading new MP4 video (${v})"
+			curl -s "http://${phoneHomeIP}/videos/${v}" -o /home/pi/videos/${v}
+			echo $(date -u) ": Restarting video service"
+			systemctl restart video.service
+			echo $(date -u) ": Video update complete"
+	fi
+else
+	# Call/response do not match
+	echo $(date -u) ": Call/response mismatch; no action taken"
 fi
