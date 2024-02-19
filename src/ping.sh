@@ -11,7 +11,7 @@ WLAI_i=$(ip -o -4 addr list $WLAI | awk '{print $4}' | cut -d/ -f1);
 WLAI_m=$(ip -o link list $WLAI | awk '{print $17}' | sed -e 's/://g');
 
 # Get device screen resoltuion
-res=$(cat /sys/class/graphics/fb0/virtual_size)
+res=$(cat /sys/class/graphics/fb0/virtual_size | tr ',' 'x')
 
 # Get the phone home config file
 phoneHomeIP=$(cat /home/pi/phoneHomeConfig.txt)
