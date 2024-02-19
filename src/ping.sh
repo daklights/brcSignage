@@ -71,5 +71,6 @@ else
 
 	# Call/response do not match
 	echo $(date -u) ": Call/response mismatch; no action taken"
+	echo $(date -u) ": Received [$em] [$wm] [$c] [$v]"
 	
 fi
