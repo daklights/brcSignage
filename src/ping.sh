@@ -1,9 +1,17 @@
 #!/bin/bash
 
-# Get device eth0 IP and MAC address
-ETHI=$(/sbin/ifconfig | grep -E "eth0:" | cut -d ' ' -f1 | cut -d: -f1)
-ETHI_i=$(ip -o -4 addr list $ETHI | awk '{print $4}' | cut -d/ -f1);
-ETHI_m=$(ip -o link list $ETHI | awk '{print $17}' | sed -e 's/://g');
+# Get device type
+mo=$(cat /proc/device-tree/model)
+if [[ $mo =~ "Zero" ]]; then
+	# Zero devices don't have ethernet adapter
+	ETHI_i=""
+	ETHI_m=""
+else
+	# Get device eth0 IP and MAC address
+	ETHI=$(/sbin/ifconfig | grep -E "eth0:" | cut -d ' ' -f1 | cut -d: -f1)
+	ETHI_i=$(ip -o -4 addr list $ETHI | awk '{print $4}' | cut -d/ -f1);
+	ETHI_m=$(ip -o link list $ETHI | awk '{print $17}' | sed -e 's/://g');
+fi
 
 # Get device wlan0 IP and MAC address
 WLAI=$(/sbin/ifconfig | grep -E "wlan0:" | cut -d ' ' -f1 | cut -d: -f1)
