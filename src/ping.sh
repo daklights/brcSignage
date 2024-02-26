@@ -41,7 +41,7 @@ while IFS= read -r line; do
 	jsonData=$(sed '$ d' <<< "$response")
 	if [ "$http_code" == "200" ]; then
 		phoneHomeIP=$line
-		echo $(date) ": Ping complete [$(http_code)] [$(fullURL)]"
+		echo $(date) ": Ping complete [$http_code] [$fullURL]"
 		break;
 	else
 		echo $(date) ": Invalid response detected from phoneHome configuration entry [$line] [HTTP:$http_code]"
