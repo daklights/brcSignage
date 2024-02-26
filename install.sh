@@ -21,6 +21,10 @@ curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/ping.s
 chmod +x /opt/ping.sh
 cronjob="* * * * * /opt/ping.sh >> /var/log/brcSignagePing_`date +\%Y\%m\%d`.log"
 (crontab -u root -l; echo "$cronjob" ) | crontab -u root -
+curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/logCleanup.sh -o /opt/logCleanup.sh
+chmod +x /opt/logCleanup.sh
+cronjob="0 4 * * * /opt/logCleanup.sh >> /var/log/brcSignagePing_`date +\%Y\%m\%d`.log"
+(crontab -u root -l; echo "$cronjob" ) | crontab -u root -
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/video -o /usr/local/bin/video
 chmod +x /usr/local/bin/video
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/phoneHomeConfig.txt -o /home/pi/phoneHomeConfig.txt
