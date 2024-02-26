@@ -41,10 +41,11 @@ while IFS= read -r line; do
 	jsonData=$(sed '$ d' <<< "$response")
 	if [ "$http_code" == "200" ]; then
 		phoneHomeIP=$line
+		echo $(date) ": Ping complete [$(http_code)] [$(fullURL)]"
 		break;
 	else
-		echo $(date -u) ": Invalid response detected from phoneHome configuration entry [$line] [HTTP:$http_code]"
-		echo $(date -u) ": You should set a new phoneHome configuration entry if this error happens often"
+		echo $(date) ": Invalid response detected from phoneHome configuration entry [$line] [HTTP:$http_code]"
+		echo $(date) ": You should set a new phoneHome configuration entry if this error happens often"
 	fi
 done < /home/pi/phoneHomeConfig.txt
 
@@ -62,17 +63,20 @@ if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 	# Do command execution (if needed)
 	if [ "$c" != "NOTHING" ]; then
 		if [ "$c" == "POWERON" ]; then
-			echo $(date -u) ": Turning power on and setting active input"
+			echo $(date) ": Turning power on and setting active input"
 			echo "on 0.0.0.0" | cec-client -s -d 1
 			echo "as 0.0.0.0" | cec-client -s -d 1
 		elif [ "$c" == "POWEROFF" ]; then
-			echo $(date -u) ": Turning power off"
+			echo $(date) ": Turning power off"
 			echo "standby 0.0.0.0" | cec-client -s -d 1
+		elif [ "$c" == "SCAN" ]; then
+			echo $(date) ": Conducting CEC scan"
+			echo "scan" | cec-client -s -d 1
 		elif [ "$c" == "RECYCLE" ]; then
-			echo $(date -u) ": Restarting video service"
+			echo $(date) ": Restarting video service"
 			systemctl restart video.service
 		elif [ "$c" == "REBOOT" ]; then
-			echo $(date -u) ": Rebooting device"
+			echo $(date) ": Rebooting device"
 			/sbin/reboot
 		fi	
 	fi
@@ -80,20 +84,20 @@ if [ "$ETHI_m" == "$em" ] || [ "$WLAI_m" == "$wm" ]; then
 	# Do video swap (if needed)
 	if [ "$currentVideo" != "$v" ]; then
 			# Video has changed, clear existing video, then download new one, then restart video service
-			echo $(date -u) ": Removing existing MP4 video (${currentVideo})"
+			echo $(date) ": Removing existing MP4 video (${currentVideo})"
 			rm /home/pi/videos/*.mp4
-			echo $(date -u) ": Downloading new MP4 video (${v})"
+			echo $(date) ": Downloading new MP4 video (${v})"
 			curl -s "http://${phoneHomeIP}/videos/${v}" -o /home/pi/videos/${v}
-			echo $(date -u) ": Restarting video service"
+			echo $(date) ": Restarting video service"
 			systemctl restart video.service
-			echo $(date -u) ": Video update complete"
+			echo $(date) ": Video update complete"
 	fi
 	
 else
 
 	# Call/response do not match
-	echo $(date -u) ": Call/response mismatch; no action taken"
-	echo $(date -u) ": Sent [$fullURL]"
-	echo $(date -u) ": Received [$em] [$wm] [$c] [$v]"
+	echo $(date) ": Call/response mismatch; no action taken"
+	echo $(date) ": Sent [$fullURL]"
+	echo $(date) ": Received [$em] [$wm] [$c] [$v]"
 	
 fi
