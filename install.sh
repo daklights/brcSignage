@@ -19,7 +19,7 @@ curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/player
 chmod +x /opt/player.sh
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/ping.sh -o /opt/ping.sh
 chmod +x /opt/ping.sh
-cronjob="* * * * * /opt/ping.sh >> /var/log/brcSignage_ping.log"
+cronjob="* * * * * /opt/ping.sh >> /var/log/brcSignagePing_`date +\%Y\%m\%d`.log"
 (crontab -u root -l; echo "$cronjob" ) | crontab -u root -
 curl -s https://raw.githubusercontent.com/daklights/brcSignage/master/src/video -o /usr/local/bin/video
 chmod +x /usr/local/bin/video
